@@ -1,0 +1,15 @@
+name: exo
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pymultinest
+  - c-compiler
+  - cxx-compiler
+  - fortran-compiler
+  - pip
+  - pip:
+    - matplotlib
+    - numba
+    - "petitRADTRANS[retrieval]"
+    - pandas
