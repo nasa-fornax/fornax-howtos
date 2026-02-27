@@ -11,7 +11,7 @@ kernelspec:
   language: python
 ---
 
-# Exoplanet Retrievals
+# Exoplanet Retrieval Quickstart
 
 
 ## Learning goals
@@ -33,9 +33,13 @@ This tutorial is intended to show the steps involved in getting exoplanet retrie
 Use this guide as a companion reference while working in a Fornax terminal session.
 
 ```{admonition} Important
-This notebook does **not** execute any of the setup or MPI commands shown below.  
+This notebook does **not** execute any of the setup or MPI commands shown below.
 All commands shown in code blocks must be run manually in a terminal by copying and pasting them. 
 The notebook serves only as documentation of the workflow.
+```
+
+
+
 
 +++
 
@@ -73,6 +77,7 @@ From the terminal, `cd` into the directory where you saved the conda file, then 
 
 ```bash
 setup-conda-env --user
+```
 
 Notes:
 
@@ -87,7 +92,6 @@ From the terminal, activate the environment with the following command:
 micromamba activate $USER_ENV_DIR/exo
 ```
 
-
 +++
 
 ## 2. Install opacity files (required and large)
@@ -99,7 +103,6 @@ Many retrieval tools (including pRT) require local opacity files that are too la
 - pRT opacity installation instructions: <https://petitradtrans.readthedocs.io/en/latest/content/available_opacities.html>
 
 If centralized opacity hosting on Fornax would help your workflow, please share feedback with the Fornax team.
-
 
 +++
 
@@ -121,7 +124,7 @@ mpirun -np 2 python examples/exoplanet-retrievals/run_prt_basic_pymultinest_mpi.
 # Medium run for quick scaling checks (assuming you have ncores > 8)
 mpirun -np 8 python examples/exoplanet-retrievals/run_prt_basic_pymultinest_mpi.py --use-mpi --n-live-points 40
 ```
-Expected output:
+### 3.1 Expected output
 
 When you run the retrieval with mpirun, you should see:
 - Validation checks confirming that the input data and model functions execute without errors.
@@ -136,7 +139,7 @@ Output files are written to:
 `retrievals/runs/out_PMN/`
 This directory contains the MultiNest chain files, posterior summaries, and generated diagnostic plots (including corner plots). 
 After the run completes, check this directory for retrieval results and figures.
-### Important Fornax MPI subtleties
+### 3.2 Important Fornax MPI subtleties
 
 When running pRT retrievals with MPI on Fornax, using all available CPU cores can exhaust limited shared-memory space (`/dev/shm`) used for inter-process communication. 
 This can fail jobs even when system RAM is still available.
@@ -146,7 +149,6 @@ In practice:
 1. Speedup is usually sub-linear.
 2. Performance gains often flatten before you reach all available cores.
 3. Many workflows perform best around roughly half to three-quarters of available cores.
-
 
 +++
 
@@ -180,7 +182,6 @@ To obtain a reliable estimate for your own science case, repeat short test runs 
 This allows you to estimate total runtime and select compute resources based on measured performance rather than core count alone.
 ```
 
-
 +++
 
 ## 5. Recommended workflow checklist
@@ -190,7 +191,7 @@ This allows you to estimate total runtime and select compute resources based on 
 3. Validate script execution at low `-np` first.
 4. Benchmark multiple `-np` values.
 5. Choose a server size based on measured scaling, not core count alone.
-6. Use keep-alive for retrievals expected to exceed 24 hours.
+6. Use keep-alive for retrievals expected to exceed a few hours.
 
 ## Next steps
 
@@ -208,11 +209,11 @@ This allows you to estimate total runtime and select compute resources based on 
 
 **Authors:** IRSA Data Science Team, including Jessica Krick, Troy Raen, Brigitta Sipőcz, Andreas Faisst, Jaladh Singhal, Vandana Desai
 
-**Updated:** 23 February 2026
+**Updated:** 2 March 2026
 
 **Contact:** [IRSA Helpdesk](https://irsa.ipac.caltech.edu/docs/help_desk.html) with questions or problems.
 
-**Runtime:** This notebook is not intended to do any calculations on its own, so runtime is insignificant.  
+**Runtime:** This notebook is not intended to do any calculations on its own, so runtime is insignificant.
 
 ```{code-cell} ipython3
 
