@@ -58,10 +58,10 @@ dependencies:
 
 ### 1.1 Build the environment:
 
-From the terminal, build the environment with the following command:
+From the terminal, `cd` into the directory where you saved the conda file, then build the environment with the following command:
+
 ```bash
-setup-conda-env --user conda-exo.yml
-```
+setup-conda-env --user
 
 Notes:
 
