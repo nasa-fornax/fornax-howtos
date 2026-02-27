@@ -114,7 +114,7 @@ def _mpi_banner() -> None:
 
 def main() -> int:
     """Run the retrieval workflow.
-
+Documentation on how to use pRT is here: https://petitradtrans.readthedocs.io/en/latest/
     Returns
     -------
     int

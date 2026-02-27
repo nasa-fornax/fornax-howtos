@@ -25,18 +25,29 @@ By the end of this tutorial, you will be able to:
 
 ## Introduction
 
-This tutorial shows how to run an exoplanet atmospheric retrieval workflow on the Fornax Science Console, using [petitRADTRANS](https://petitradtrans.readthedocs.io/en/latest/index.html) (pRT) + [`pymultinest`](https://johannesbuchner.github.io/PyMultiNest/) + [Message Passing Interface](https://www.mpich.org) (MPI) as an example stack. This code follows the example basic retrieval [tutorial](https://petitradtrans.readthedocs.io/en/latest/content/notebooks/retrieval_basic.html) from pRT. This tutorial is intended to show the steps involved in getting exoplanet retrievals to run on a system like Fornax, and does not show the details and specifics of how to tailor existing retrieval codes to match specific datasets.
+This tutorial shows how to run an exoplanet atmospheric retrieval workflow on the Fornax Science Console, using [petitRADTRANS](https://petitradtrans.readthedocs.io/en/latest/index.html) (pRT) + [`pymultinest`](https://johannesbuchner.github.io/PyMultiNest/) + [Message Passing Interface](https://www.mpich.org) (MPI) as an example stack. 
+This code follows the example basic retrieval [tutorial](https://petitradtrans.readthedocs.io/en/latest/content/notebooks/retrieval_basic.html) from pRT. 
+This tutorial is intended to show the steps involved in getting exoplanet retrievals to run on a system like Fornax, and does not show the details and specifics of how to tailor existing retrieval codes to match specific datasets.
 
 ## Instructions
-Use this guide along with a terminal to setup and run basic exoplanet retrievals.
+Use this guide as a companion reference while working in a Fornax terminal session.
+
+```{admonition} Important
+This notebook does **not** execute any of the setup or MPI commands shown below.  
+All commands shown in code blocks must be run manually in a terminal by copying and pasting them. 
+The notebook serves only as documentation of the workflow.
 
 +++
 
 ## 1. Create a persistent environment for retrieval dependencies
 
-Retrieval workflows generally require tightly constrained scientific software stacks. On Fornax, use a persistent user-managed conda/micromamba environment.
+Retrieval workflows generally require tightly constrained scientific software stacks. 
+On Fornax, use a persistent user-managed conda/micromamba environment.
+Instructions for how to do that are here: https://docs.fornax.sciencecloud.nasa.gov/compute-environments/
 
-Create a file named `conda-exo.yml` with the following contents.  One is also provided in the examples/exoplanet_retrievals directory for convenience.  Note that the name of the file must start with "conda-" for the setup script to find it.
+Create a file named `conda-exo.yml` with the following contents.  
+One is also provided in the examples/exoplanet_retrievals directory for convenience.  
+Note that the name of the file must start with "conda-" for the setup script to find it.
 
 ```yaml
 name: exo
@@ -67,7 +78,7 @@ Notes:
 
 - The tool prompts you to confirm the environment name.
 - First-time environment creation may take more than 10 minutes.
-- Retrieval stacks can consume significant storage.
+- Environments containing packages to run retrievals can consume significant storage.
 
 ### 1.2 Activate the environment:
 
@@ -102,7 +113,7 @@ This repository includes:
 - `examples/exoplanet-retrievals/hst_example_clear_spec.txt`
 
 Example MPI launch commands:
-
+Note: The --n-live-points argument sets the number of “live” samples (n_live in MultiNest terminology) maintained during nested sampling; larger values improve the stability of evidence and posterior estimates but increase runtime.
 ```bash
 # Small validation run (recommended first test)
 mpirun -np 2 python examples/exoplanet-retrievals/run_prt_basic_pymultinest_mpi.py --use-mpi --n-live-points 40
@@ -110,10 +121,25 @@ mpirun -np 2 python examples/exoplanet-retrievals/run_prt_basic_pymultinest_mpi.
 # Medium run for quick scaling checks (assuming you have ncores > 8)
 mpirun -np 8 python examples/exoplanet-retrievals/run_prt_basic_pymultinest_mpi.py --use-mpi --n-live-points 40
 ```
+Expected output:
 
+When you run the retrieval with mpirun, you should see:
+- Validation checks confirming that the input data and model functions execute without errors.
+- A MultiNest header showing the number of live points and model dimensionality.
+- Periodic sampling updates (acceptance rate, total samples, and evidence ln Z estimates).
+- A final summary including log evidence (ln Z ± uncertainty), total likelihood evaluations, and retrieved parameter values with uncertainties
+
+For the small validation run (--n-live-points 40), expect on the order of ~1,000–2,000 likelihood evaluations and a runtime of a few minutes, depending on the number of MPI processes used. 
+Larger n_live_points values will increase runtime substantially but produce more stable evidence estimates and posterior constraints.
+
+Output files are written to:
+`retrievals/runs/out_PMN/`
+This directory contains the MultiNest chain files, posterior summaries, and generated diagnostic plots (including corner plots). 
+After the run completes, check this directory for retrieval results and figures.
 ### Important Fornax MPI subtleties
 
-When running pRT retrievals with MPI on Fornax, using all available CPU cores can exhaust limited shared-memory space (`/dev/shm`) used for inter-process communication. This can fail jobs even when system RAM is still available.
+When running pRT retrievals with MPI on Fornax, using all available CPU cores can exhaust limited shared-memory space (`/dev/shm`) used for inter-process communication. 
+This can fail jobs even when system RAM is still available.
 
 In practice:
 
@@ -126,7 +152,10 @@ In practice:
 
 ## 4. Benchmark to estimate full retrieval runtime
 
-Full retrieval wall time is difficult to predict in advance. Benchmarking your own setup (opacities, chemistry assumptions, cloud setup, live points) helps you choose compute size and decide whether you need keep-alive sessions for runs longer than 24 hours.
+Full retrieval wall time is difficult to predict in advance. 
+Benchmarking your own setup (opacities, chemistry assumptions, cloud setup, live points) helps you choose compute size and estimate total runtime. 
+If you anticipate that your retrieval will run longer than a few hours, enabling the [JupyterLab keep-alive feature](https://docs.fornax.sciencecloud.nasa.gov/jupyterlab/#jupyterlab-session-information) can prevent unintended shutdown. 
+However, keep-alive sessions incur credit charges for their entire lifetime, regardless of active CPU usage, so plan accordingly and monitor extended runs.
 
 ### Benchmark figure 1: speedup vs nprocs
 
@@ -134,7 +163,10 @@ Full retrieval wall time is difficult to predict in advance. Benchmarking your o
 :alt: Speedup versus number of MPI processes
 :name: fig-speedup-vs-nprocs
 
-Speedup is defined as the wall time for 1 processor divided by the wall time for *nprocs* processors. Typical behavior includes (1) non-linear scaling, (2) useful speedup up to about 0.5-0.75× of available cores, and (3) larger gains for larger `n_live_points`, which is more representative of realistic retrieval configurations. Overheads are a major cause of non-linear speedups and limits in gains as a function of `nprocs`.
+Speedup is defined as the wall time for 1 processor divided by the wall time for *nprocs* processors.  
+Typical behavior includes (1) non-linear scaling, (2) useful speedup up to about 0.5-0.75× of available cores, and (3) Larger gains are seen for larger n_live_points (shown as n_live in the legend), which controls the number of active samples MultiNest keeps while exploring parameter space. 
+Increasing n_live_points improves posterior and evidence stability but increases runtime.
+Overheads are a major cause of non-linear speedups and limits in gains as a function of `nprocs`.
 ```
 
 ### Benchmark figure 2: seconds per likelihood evaluation vs nprocs
@@ -143,7 +175,9 @@ Speedup is defined as the wall time for 1 processor divided by the wall time for
 :alt: Seconds per likelihood evaluation versus number of MPI processes
 :name: fig-seconds-per-like
 
-A benchmarking curve like this for your specific retrieval setup (including your opacity selection, clouds, and model complexity) can help predict full runtime and guide resource selection.
+The example figure illustrates typical scaling behavior for this configuration, but runtime depends strongly on your specific retrieval setup. 
+To obtain a reliable estimate for your own science case, repeat short test runs at multiple -np values (e.g., 2, 4, 8, etc.) and a range of n_live_points, record the wall time for each, and construct a similar scaling curve. 
+This allows you to estimate total runtime and select compute resources based on measured performance rather than core count alone.
 ```
 
 
@@ -155,7 +189,7 @@ A benchmarking curve like this for your specific retrieval setup (including your
 2. Install pRT opacities in persistent user storage.
 3. Validate script execution at low `-np` first.
 4. Benchmark multiple `-np` values.
-5. Choose a resource size based on measured scaling, not core count alone.
+5. Choose a server size based on measured scaling, not core count alone.
 6. Use keep-alive for retrievals expected to exceed 24 hours.
 
 ## Next steps
