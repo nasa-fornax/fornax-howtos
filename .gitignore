@@ -1,0 +1,8 @@
+# Jupyter checkpoints
+**/.ipynb_checkpoints/
+
+# pRT retrieval output
+tutorials/exoplanet_retrievals/retrievals/
+
+# pRT opacity data (large, downloaded separately)
+tutorials/exoplanet_retrievals/input_data/
