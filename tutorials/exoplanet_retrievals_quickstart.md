@@ -38,9 +38,6 @@ All commands shown in code blocks must be run manually in a terminal by copying 
 The notebook serves only as documentation of the workflow.
 ```
 
-
-
-
 +++
 
 ## 1. Create a persistent environment for retrieval dependencies
@@ -97,10 +94,48 @@ micromamba activate $USER_ENV_DIR/exo
 ## 2. Install opacity files (required and large)
 
 Many retrieval tools (including pRT) require local opacity files that are too large to package in this repository.
+Opacity files are **not** distributed in this repo due to size constraints.
 
-- You must download/install opacities in your own Fornax storage.
-- Opacity files are **not** distributed in this repo due to size constraints.
-- pRT opacity installation instructions: <https://petitradtrans.readthedocs.io/en/latest/content/available_opacities.html>
+```{admonition} Fornax note
+pRT supports automatic opacity downloads via [Keeper](https://keeper.mpdl.mpg.de/d/ccf25082fda448c8a0d0), but this method is not available on Fornax.
+Follow the download steps in section 2.2 below instead.
+On different compute resources, the automatic Keeper download may work for you.
+```
+
+### 2.1 Opacities required for this tutorial
+
+This tutorial uses the following opacity files:
+
+- **Line species (correlated-k):** `H2O__POKAZATEL`, `CH4__HITEMP`, `CO-NatAbund__HITEMP`
+- **Collision-induced absorption (CIA):** `H2--H2`, `H2--He`
+- **Rayleigh scattering:** `H2`, `He` (built into pRT — no download needed)
+
+Opacity files are stored under an `input_data/` directory alongside the retrieval script in `examples/exoplanet-retrievals/input_data/`.
+This path is set automatically when you run the setup script described below.
+
+### 2.2 Download opacities using the setup script
+
+This repository includes a setup script that creates the `input_data/` directory, registers it with pRT, and downloads the required opacity files.
+
+```{admonition} Note
+:class: note
+The setup script permanently updates your global pRT configuration (`~/.petitradtrans/petitradtrans_config_file.ini`) to point to the tutorial `input_data/` directory.
+If you already have pRT configured with your own opacity data elsewhere, you can restore your original path afterwards by calling `petitradtrans_config_parser.set_input_data_path('/your/original/path')`.
+```
+
+```bash
+python examples/exoplanet-retrievals/setup_opacities.py
+```
+
+```{admonition} Warning
+:class: warning
+Opacity files are large — the full set for this tutorial totals approximately 650 MB.
+Downloads may take significant time.
+Run the setup script in a terminal rather than a notebook to avoid session timeouts.
+```
+
+The script triggers pRT's built-in download mechanism by initializing a `Radtrans` object with the exact species used in this tutorial.
+If prompted to choose among multiple matching files, type the integer for the `R1000_0.1-250mu` file and press Enter.
 
 If centralized opacity hosting on Fornax would help your workflow, please share feedback with the Fornax team.
 

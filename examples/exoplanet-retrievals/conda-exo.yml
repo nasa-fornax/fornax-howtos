@@ -13,3 +13,4 @@ dependencies:
     - numba
     - "petitRADTRANS[retrieval]"
     - pandas
+    - exo_k

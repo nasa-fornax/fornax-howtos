@@ -39,8 +39,8 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument(
         "--prt-data",
         type=str,
-        default="/home/jkrick/fornax-demo-notebooks/pRT/prt_data",
-        help="Directory containing hst_example_clear_spec.txt ",
+        default=str(Path(__file__).parent / "input_data"),
+        help="Path to the pRT input_data directory containing opacity files (default: input_data/ alongside this script).",
     )
     p.add_argument(
         "--output-dir",
@@ -114,7 +114,9 @@ def _mpi_banner() -> None:
 
 def main() -> int:
     """Run the retrieval workflow.
-Documentation on how to use pRT is here: https://petitradtrans.readthedocs.io/en/latest/
+
+    Documentation on how to use pRT is here: https://petitradtrans.readthedocs.io/en/latest/
+
     Returns
     -------
     int
@@ -160,19 +162,24 @@ Documentation on how to use pRT is here: https://petitradtrans.readthedocs.io/en
     # Optional: print MPI info to confirm you launched multiple ranks
     _mpi_banner()
 
-    # Import retrieval dependencies only after environment variables are set.
+    # Import retrieval dependencies after environment variables are set.
+    # pRT reads PRT_INPUT_DATA_PATH at import time, so the import must come after os.environ is set.
+    # This is safe because this script is always run as a fresh process (e.g. via mpirun),
+    # never imported or called multiple times within the same session.
     import numpy as np  # noqa: F401
     from petitRADTRANS import physical_constants as cst
     from petitRADTRANS.retrieval import Retrieval, RetrievalConfig
     from petitRADTRANS.retrieval.models import isothermal_transmission
 
-    # Resolve user paths and confirm expected tutorial data file exists.
+    # Resolve opacity data path.
     prt_data_dir = Path(args.prt_data).expanduser().resolve()
-    data_file = prt_data_dir / "hst_example_clear_spec.txt"
+
+    # Spectrum file lives alongside this script, not inside the opacity data directory.
+    data_file = Path(__file__).parent / "hst_example_clear_spec.txt"
     if not data_file.exists():
         raise FileNotFoundError(
             f"Cannot find data file: {data_file}\n"
-            "Expected hst_example_clear_spec.txt in --prt-data directory."
+            "Expected hst_example_clear_spec.txt in the same directory as this script."
         )
 
     # Ensure output path exists before initializing pRT retrieval objects.
