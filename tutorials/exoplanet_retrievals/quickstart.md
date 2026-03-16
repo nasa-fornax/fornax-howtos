@@ -31,6 +31,11 @@ This tutorial is intended to show the steps involved in getting exoplanet retrie
 
 ## Instructions
 Use this guide as a companion reference while working in a Fornax terminal session.
+All terminal commands in this tutorial should be run from the `tutorials/exoplanet_retrievals/` directory of this repository:
+
+```bash
+cd tutorials/exoplanet_retrievals
+```
 
 ```{admonition} Important
 This notebook does **not** execute any of the setup or MPI commands shown below.
@@ -47,7 +52,7 @@ On Fornax, use a persistent user-managed conda/micromamba environment.
 Instructions for how to do that are here: https://docs.fornax.sciencecloud.nasa.gov/compute-environments/
 
 Create a file named `conda-exo.yml` with the following contents.  
-One is also provided in the examples/exoplanet_retrievals directory for convenience.  
+One is also provided in the tutorials/exoplanet_retrievals directory for convenience.
 Note that the name of the file must start with "conda-" for the setup script to find it.
 
 ```yaml
@@ -70,7 +75,7 @@ dependencies:
 
 ### 1.1 Build the environment:
 
-From the terminal, `cd` into the directory where you saved the conda file, then build the environment with the following command:
+From the terminal, build the environment with the following command:
 
 ```bash
 setup-conda-env --user
@@ -167,13 +172,19 @@ When you run the retrieval with mpirun, you should see:
 - Periodic sampling updates (acceptance rate, total samples, and evidence ln Z estimates).
 - A final summary including log evidence (ln Z ± uncertainty), total likelihood evaluations, and retrieved parameter values with uncertainties
 
-For the small validation run (--n-live-points 40), expect on the order of ~1,000–2,000 likelihood evaluations and a runtime of a few minutes, depending on the number of MPI processes used. 
+For the small validation run (-np2 --n-live-points 40), expect on the order of ~1,000–2,000 likelihood evaluations and a runtime of a few minutes, depending on the number of MPI processes used.
 Larger n_live_points values will increase runtime substantially but produce more stable evidence estimates and posterior constraints.
 
 Output files are written to:
 `retrievals/runs/out_PMN/`
-This directory contains the MultiNest chain files, posterior summaries, and generated diagnostic plots (including corner plots). 
-After the run completes, check this directory for retrieval results and figures.
+This directory contains the MultiNest chain files and posterior summaries.
+Corner plots and diagnostic figures are not generated during the retrieval run. To produce them, re-run in evaluate-only mode, which reads the existing chain files and generates plots without repeating the sampling:
+
+```bash
+mpirun -np 2 python run_retrieval.py --use-mpi --evaluate-only
+```
+
+After this completes, figures will appear in `retrievals/runs/`.
 ### 3.2 Important Fornax MPI subtleties
 
 When running pRT retrievals with MPI on Fornax, using all available CPU cores can exhaust limited shared-memory space (`/dev/shm`) used for inter-process communication. 
