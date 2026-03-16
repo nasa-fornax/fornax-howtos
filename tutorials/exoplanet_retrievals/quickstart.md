@@ -110,7 +110,7 @@ This tutorial uses the following opacity files:
 - **Collision-induced absorption (CIA):** `H2--H2`, `H2--He`
 - **Rayleigh scattering:** `H2`, `He` (built into pRT — no download needed)
 
-Opacity files are stored under an `input_data/` directory alongside the retrieval script in `examples/exoplanet-retrievals/input_data/`.
+Opacity files are stored under an `input_data/` directory alongside the retrieval script in `tutorials/exoplanet_retrievals/input_data/`.
 This path is set automatically when you run the setup script described below.
 
 ### 2.2 Download opacities using the setup script
@@ -124,7 +124,7 @@ If you already have pRT configured with your own opacity data elsewhere, you can
 ```
 
 ```bash
-python examples/exoplanet-retrievals/setup_opacities.py
+python setup_opacities.py
 ```
 
 ```{admonition} Warning
@@ -147,17 +147,17 @@ For pRT workflows that use `pymultinest`, write retrieval wrappers as Python scr
 
 This repository includes:
 
-- `examples/exoplanet-retrievals/run_prt_basic_pymultinest_mpi.py`
-- `examples/exoplanet-retrievals/hst_example_clear_spec.txt`
+- `tutorials/exoplanet_retrievals/run_retrieval.py`
+- `tutorials/exoplanet_retrievals/hst_example_clear_spec.txt`
 
 Example MPI launch commands:
 Note: The --n-live-points argument sets the number of “live” samples (n_live in MultiNest terminology) maintained during nested sampling; larger values improve the stability of evidence and posterior estimates but increase runtime.
 ```bash
 # Small validation run (recommended first test)
-mpirun -np 2 python examples/exoplanet-retrievals/run_prt_basic_pymultinest_mpi.py --use-mpi --n-live-points 40
+mpirun -np 2 python run_retrieval.py --use-mpi --n-live-points 40
 
 # Medium run for quick scaling checks (assuming you have ncores > 8)
-mpirun -np 8 python examples/exoplanet-retrievals/run_prt_basic_pymultinest_mpi.py --use-mpi --n-live-points 40
+mpirun -np 8 python run_retrieval.py --use-mpi --n-live-points 40
 ```
 ### 3.1 Expected output
 
@@ -196,7 +196,6 @@ However, keep-alive sessions incur credit charges for their entire lifetime, reg
 
 ### Benchmark figure 1: speedup vs nprocs
 
-```{figure} ../examples/exoplanet-retrievals/speedup_vs_nprocs.png
 :alt: Speedup versus number of MPI processes
 :name: fig-speedup-vs-nprocs
 
@@ -208,7 +207,6 @@ Overheads are a major cause of non-linear speedups and limits in gains as a func
 
 ### Benchmark figure 2: seconds per likelihood evaluation vs nprocs
 
-```{figure} ../examples/exoplanet-retrievals/seconds_per_likelihood_eval_vs_nprocs.png
 :alt: Seconds per likelihood evaluation versus number of MPI processes
 :name: fig-seconds-per-like
 
