@@ -153,8 +153,7 @@ micromamba deactivate
 ## Acknowledgements
 
 - [Caltech/IPAC-IRSA](https://irsa.ipac.caltech.edu/)
-
-Portions of this tutorial were developed with the assistance of AI tools.
+- Portions of this tutorial were developed with the assistance of AI tools.
 
 ## About this notebook
 
