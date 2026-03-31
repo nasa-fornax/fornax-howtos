@@ -5,7 +5,5 @@ dependencies:
   - python=3.12
   - numpy
   - astropy
-  - pip
-  - pip:
-    - matplotlib
-    - pandas
+  - matplotlib
+  - pandas

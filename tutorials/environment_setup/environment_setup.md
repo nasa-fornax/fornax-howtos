@@ -68,23 +68,20 @@ dependencies:
   - python=3.12
   - numpy
   - astropy
-  - pip
-  - pip:
-    - matplotlib
-    - pandas
+  - matplotlib
+  - pandas
 ```
 
 Save this file as `conda-myenv.yml` in the directory where you will run the setup command.
 
 A few notes on the file format:
 
-- `name` sets the environment name.
-  You will use this name to activate the environment.
+- The environment name is derived from the file name by stripping the `conda-` prefix (e.g., `conda-myenv.yml` creates an environment named `myenv`). We recommend setting the `name:` field in the YAML to match, although it is not strictly required.
+  You will use the environment name to activate the environment.
 - `channels` tells conda where to look for packages.
   `conda-forge` is a large community channel with a wide selection of astronomy software.
 - `dependencies` lists the packages to install.
-  You can mix conda packages and pip packages.
-- The `pip:` subsection (indented under `dependencies`) lets you include packages that are only available on PyPI.
+  Use conda packages whenever possible; only use a `pip:` subsection for packages unavailable through conda channels, and pip packages should be listed last.
 
 +++
 
@@ -106,9 +103,10 @@ What to expect:
 - The tool will find your `conda-*.yml` file and prompt you to confirm the environment name.
 - First-time environment creation can take **more than 10 minutes**, especially for larger dependency sets.
 - You will see progress output as packages are solved and installed.
+- In addition to the conda environment, the tool also registers a Jupyter kernel, making the environment available for use in notebooks.
+- If an environment with the same name already exists, the tool will error. Delete the environment first (see below) before re-running.
 
-If you have multiple `conda-*.yml` files in the same directory, the tool will ask which one to use.
-If you only have one, it will use it automatically after confirmation.
+If you have multiple `conda-*.yml` files in the same directory, the tool will create an environment for each one.
 
 +++
 
@@ -140,8 +138,14 @@ micromamba deactivate
 
 ## Next steps
 
-- To install additional packages into an existing environment, activate it and use `conda install <package>` or `pip install <package>`.
-- To update the environment from a modified YAML file, re-run `setup-conda-env --user`.
+- To install additional packages into an existing environment, activate it and use `micromamba install <package>`. Avoid using `pip install` when possible — installing conda packages after pip can cause conflicts.
+- To update the environment from a modified YAML file, delete the existing environment first (see below), then re-run `setup-conda-env --user`.
+- To delete an environment and its Jupyter kernel, run:
+
+  ```bash
+  rm -rf $USER_ENV_DIR/<name>
+  rm -rf ~/.local/share/jupyter/kernels/<name>
+  ```
 - For pip-based environments (lighter-weight, faster to create), see the [Fornax compute environments documentation](https://docs.fornax.sciencecloud.nasa.gov/compute-environments/).
 
 +++
@@ -154,11 +158,11 @@ Portions of this tutorial were developed with the assistance of AI tools.
 
 ## About this notebook
 
-**Authors:** IRSA Data Science Team, including Jessica Krick, Troy Raen, Brigitta Sipőcz, Andreas Faisst, Jaladh Singhal, Vandana Desai
+**Authors:** Jessica Krick, Troy Raen, Brigitta Sipőcz
 
-**Updated:** 10 March 2026
+**Updated:** 31 March 2026
 
-**Contact:** [IRSA Helpdesk](https://irsa.ipac.caltech.edu/docs/help_desk.html) with questions or problems.
+**Contact:** For help with this notebook, please open a topic in the [Fornax Helpdesk](https://discourse.fornax.sciencecloud.nasa.gov/c/helpdesk/6).
 
 **Runtime:** This notebook is not intended to do any calculations on its own, so runtime is insignificant.
 
