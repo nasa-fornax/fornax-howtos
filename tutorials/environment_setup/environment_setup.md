@@ -13,7 +13,7 @@ kernelspec:
 
 # Setting Up a Conda Environment on Fornax
 
-## Learning goals
+## Learning Goals
 
 By the end of this tutorial, you will be able to:
 
@@ -31,7 +31,6 @@ This tutorial walks through the steps to do that.
 
 ## Instructions
 
-```{admonition} Important
 This notebook does **not** execute any of the commands shown below.
 All commands shown in code blocks must be run manually in a terminal by copying and pasting them.
 The notebook serves only as documentation of the workflow.
@@ -163,6 +162,3 @@ Portions of this tutorial were developed with the assistance of AI tools.
 
 **Runtime:** This notebook is not intended to do any calculations on its own, so runtime is insignificant.
 
-```{code-cell} ipython3
-
-```
