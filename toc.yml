@@ -1,0 +1,8 @@
+version: 1
+project:
+  toc:
+    - file: index.md
+    - title: Exoplanet Retrievals
+      file: tutorials/exoplanet_retrievals/quickstart.md
+    - title: Environment Management
+      file: tutorials/environment_setup/environment_setup.md
