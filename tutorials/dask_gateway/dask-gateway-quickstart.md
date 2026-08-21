@@ -13,7 +13,7 @@ authors:
   - name: Troy Raen
 ---
 
-# Scale Up Your Work with Dask Gateway
+# Dask Gateway Quick Start
 
 +++
 
