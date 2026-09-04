@@ -1,10 +1,9 @@
 # See docs at: https://mystmd.org/guide/frontmatter
 version: 1
 project:
-  subject: Fornax Howto Notebooks
-  description: Howto notebooks for example Fornax use case scenarios
+  subject: Fornax How-to Notebooks
+  description: How-to notebooks for example Fornax use case scenarios
   keywords: [astronomy]
-  authors: [Fornax developers and scientists]
   github: https://github.com/nasa-fornax/fornax-howtos
   license:
     id: BSD-3-Clause
