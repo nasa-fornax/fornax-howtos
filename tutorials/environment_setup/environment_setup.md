@@ -31,6 +31,7 @@ This tutorial walks through the steps to do that.
 
 ## Instructions
 
+```{note}
 This notebook does **not** execute any of the commands shown below.
 All commands shown in code blocks must be run manually in a terminal by copying and pasting them.
 The notebook serves only as documentation of the workflow.
@@ -164,4 +165,3 @@ micromamba deactivate
 **Contact:** For help with this notebook, please open a topic in the [Fornax Helpdesk](https://discourse.fornax.sciencecloud.nasa.gov/c/helpdesk/6).
 
 **Runtime:** This notebook is not intended to do any calculations on its own, so runtime is insignificant.
-
