@@ -1,0 +1,12 @@
+# Requires Python 3.13.6.
+# These Dask-related libraries must be pinned to the exact versions installed on the backend gateway server and workers.
+dask==2026.3.0
+distributed==2026.3.0
+msgpack==1.1.2
+tornado==6.5.5
+# Additional libraries the notebook and cluster workers will use.
+bokeh>=3.1.0
+dask_gateway
+matplotlib
+numpy
+pandas
