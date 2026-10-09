@@ -9,6 +9,8 @@ kernelspec:
   name: python3
   display_name: python3
   language: python
+authors:
+  - name: Jessica Krick
 ---
 
 # Exoplanet Retrieval Quickstart
@@ -251,11 +253,9 @@ This allows you to estimate total runtime and select compute resources based on 
 
 ## About this notebook
 
-**Authors:** IRSA Data Science Team, including Jessica Krick, Troy Raen, Brigitta Sipőcz, Andreas Faisst, Jaladh Singhal, Vandana Desai
+**Updated:** 9 October 2026
 
-**Updated:** 2 March 2026
-
-**Contact:** [IRSA Helpdesk](https://irsa.ipac.caltech.edu/docs/help_desk.html) with questions or problems.
+**Contact:** For help with this notebook, please open a topic in the [Fornax Helpdesk](https://discourse.fornax.sciencecloud.nasa.gov/c/helpdesk).
 
 **Runtime:** This notebook is not intended to do any calculations on its own, so runtime is insignificant.
 
