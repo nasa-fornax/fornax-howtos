@@ -1,2 +1,12 @@
 # We need JB>=2.1.1 as we use multiple new features first shipped in myst-cli 1.8.0
 jupyter-book>=2.1.1
+# Notebook-specific requirements
+# cloud_access_intro: MAST's list_cloud_datasets() and anonymous get_cloud_uris() are not yet in a
+# released astroquery (latest is 0.4.11). Pin the development commit used by the Fornax "mast-tutorials"
+# environment; replace with "astroquery>=0.4.12" once that version is released.
+astropy
+astroquery @ git+https://github.com/astropy/astroquery.git@bf791595eb35934957c27f6a576d0221fc9c51f5
+boto3
+matplotlib
+reproject
+s3fs
